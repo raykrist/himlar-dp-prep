@@ -95,14 +95,8 @@ class ProvisionerClient(object):
             log.debug('login_view - login not complete')
             return response
 
-#@view_config(route_name='reset', renderer='templates/reset.mak')
-#def reset_view(user):
-    #local_pw: 'aaaa'
-    #log.debug('reset_view')
-    #return {'message': 'local_pw'}
-
 @view_config(route_name='home', renderer='templates/home.mak')
-def home_view(exc, request):
+def home_view(request):
     log.debug('home_view')
     return {}
 
