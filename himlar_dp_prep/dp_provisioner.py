@@ -112,8 +112,8 @@ class DpProvisioner(object):
         lname = local_user_name(user_id)
         if self.with_local_user:
             self.localpw = make_password()
-            #user = self.ks.users.update(name=lname, domain=self.domain,
-            #                            project=proj, email=user_id, password=self.local_pw)
+            user = self.ks.users.update(name=lname, domain=self.domain,
+                                        project=proj, email=user_id, password=self.local_pw)
             log.info("local user created: %s", user.id)
         return dict(local_pw=self.local_pw)
 
