@@ -19,7 +19,7 @@ def group_name(user_id):
 def proj_name(user_id):
     return user_id.lower()
 
-def local_user_name(user_id):
+def l_ocal_user_name(user_id):
     return user_id.lower()
 
 def make_password():
@@ -107,6 +107,15 @@ class DpProvisioner(object):
             self.ks.users.add_to_group(user, group)
         return dict(local_user_name=lname,
                     local_pw=self.local_pw)
+
+    def reset(self, user_id):
+        lname = local_user_name(user_id)
+        if self.with_local_user:
+            self.localpw = make_password()
+            #user = self.ks.users.update(name=lname, domain=self.domain,
+            #                            project=proj, email=user_id, password=self.local_pw)
+            log.info("local user created: %s", user.id)
+        return dict(local_pw=self.local_pw)
 
 if __name__ == '__main__':
     DESCRIPTION = "Dataporten provisioner for Openstack"

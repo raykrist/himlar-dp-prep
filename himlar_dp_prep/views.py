@@ -5,6 +5,7 @@ from authomatic import Authomatic
 from authomatic.adapters import WebObAdapter
 from authomatic.providers import oauth2
 from .dp_provisioner import DpProvisioner
+from grampg import PasswordGenerator
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +56,15 @@ class ProvisionerClient(object):
             res.update(prov_result)
         return res
 
+    @view_config(route_name='reset', renderer='templates/reset.mak')
+    def reset_view(self):
+        user = 'man'
+        gen = PasswordGenerator()
+        local_pw = (gen.of().some('numbers').some('lower_letters').some('upper_letters')
+            .length(16).done().generate())
+        res = dict(user=user, local_pw=local_pw) 
+        return res
+
     def login_complete(self, result):
         if result.error:
             raise LoginFailedException(result.error.message)
@@ -85,8 +95,14 @@ class ProvisionerClient(object):
             log.debug('login_view - login not complete')
             return response
 
+#@view_config(route_name='reset', renderer='templates/reset.mak')
+#def reset_view(user):
+    #local_pw: 'aaaa'
+    #log.debug('reset_view')
+    #return {'message': 'local_pw'}
+
 @view_config(route_name='home', renderer='templates/home.mak')
-def home_view(request):
+def home_view(exc, request):
     log.debug('home_view')
     return {}
 
@@ -101,3 +117,4 @@ def no_user_view(exc, request):
 @view_config(context=NoEmailException, renderer="templates/noemail.mak")
 def no_email_view(exc, request):
     return {}
+
