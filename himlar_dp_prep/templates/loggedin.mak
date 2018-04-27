@@ -16,6 +16,10 @@
     <span class="glyphicon glyphicon-user uninett-fontColor-red"></span>
     Continue to UH-IaaS
   </a>
+  <br/>
+% if was_provisioned:
+  <a href="/reset" class="btn btn-underline">Reset password?</a>
+% endif
   <p>You may be sent back to Dataporten again.</p>
 </div>
 
