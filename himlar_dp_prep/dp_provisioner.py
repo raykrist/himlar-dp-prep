@@ -19,7 +19,7 @@ def group_name(user_id):
 def proj_name(user_id):
     return user_id.lower()
 
-def l_ocal_user_name(user_id):
+def local_user_name(user_id):
     return user_id.lower()
 
 def make_password():
