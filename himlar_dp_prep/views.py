@@ -58,11 +58,13 @@ class ProvisionerClient(object):
 
     @view_config(route_name='reset', renderer='templates/reset.mak')
     def reset_view(self):
-        user = 'man'
+        horizon_url = self.settings.get('horizon_url', '')
+        tpl = '{}/dashboard/auth/login/'
         gen = PasswordGenerator()
         local_pw = (gen.of().some('numbers').some('lower_letters').some('upper_letters')
             .length(16).done().generate())
-        res = dict(user=user, local_pw=local_pw) 
+        res = dict(dashboard_url=tpl.format(horizon_url),
+                    local_pw=local_pw) 
         return res
 
     def login_complete(self, result):

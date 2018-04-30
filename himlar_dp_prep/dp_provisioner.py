@@ -115,7 +115,7 @@ class DpProvisioner(object):
             user = self.ks.users.update(name=lname, domain=self.domain,
                                         project=proj, email=user_id, password=self.local_pw)
             log.info("local user created: %s", user.id)
-        return dict(local_pw=self.local_pw)
+        return dict(local_user_name=lname, local_pw=self.local_pw)
 
 if __name__ == '__main__':
     DESCRIPTION = "Dataporten provisioner for Openstack"
