@@ -1,4 +1,4 @@
-import pika
+#import pika
 import logging
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -7,7 +7,7 @@ from authomatic.adapters import WebObAdapter
 from authomatic.providers import oauth2
 from .dp_provisioner import DpProvisioner
 from grampg import PasswordGenerator
-from .rmp import MQclient
+#from .rmp import MQclient
 
 log = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class ProvisionerClient(object):
             .length(16).done().generate())
         res = dict(dashboard_url=tpl.format(horizon_url),
                     local_pw=local_pw) 
-        rmq.push(email=user.email, password=local_pw, queue='access')
+#        rmq.push(email=user.email, password=local_pw, queue='access')
         return res
 
     def login_complete(self, result):
