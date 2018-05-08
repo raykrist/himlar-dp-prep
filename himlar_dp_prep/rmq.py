@@ -11,21 +11,20 @@ class MQclient(object):
     #vhost = 'access'
 
     def __init__(self, config):
+    	self.config = config 
         credentials = pika.PlainCredentials(
-            username=self.config['local'],
-            password=self.config['local'])
-#            username=self.__get_config('rabbitmq', 'username'),
-#            password=self.__get_config('rabbitmq', 'password'))
+            username=self.config['mq_username'],
+            password=self.config['mq_password'])
 
         parameters = pika.ConnectionParameters(
-            host=self.config['host'],
-            vhost=self.config['vhost'],
-#            host=self.__get_config('rabbitmq', 'host'),
-#            virtual_host=self.__get_config('rabbitmq', 'vhost'),
+            host=self.config['mq_host'],
+            virtual_host=self.config['mq_vhost'],
             credentials=credentials)
+        print config['mq_vhost']
+	print config['mq_host']
+	print config['mq_username']
+	print config['mq_password']
         self.connection = pika.BlockingConnection(parameters)
-        print 'username'
-        print ' password'
 
     def get_channel(self, queue):
         channel = self.connection.channel()
@@ -44,14 +43,13 @@ class MQclient(object):
             'password': password
         }
         message = json.dumps(data)
-        if not self.dry_run:
-            result = channel.basic_publish(exchange='',
-                                           routing_key=queue,
-                                           body=message,
-                                           properties=pika.BasicProperties(
-                                               delivery_mode=2))
-            if result:
-                print "(message %s added to queue %s', message, queue)"
+        result = channel.basic_publish(exchange='',
+                                       routing_key=queue,
+                                       body=message,
+                                       properties=pika.BasicProperties(
+                                       delivery_mode=2))
+        if result:
+            print "(message %s added to queue %s', message, queue)"
        #         self.logger.debug('=> message %s added to queue %s', message, queue)
         #else:
         #    self.logger.debug('=> DRY-RUN: message %s added to queue %s', message, queue)

@@ -14,7 +14,6 @@ DP_DOMAIN_NAME = 'dataporten'
 MEMBER_ROLE_NAME = '_member_'
 
 log = logging.getLogger(__name__)
-rmq = MQclient(config)
 
 def group_name(user_id):
     return '{}-group'.format(user_id)
@@ -50,6 +49,8 @@ class DpProvisioner(object):
             self.domain = domains[0]
         else:
             raise ValueError("Expecting unique '{}' domain".format(dp_domain_name))
+	print config['mq_username']
+        self.rmq = MQclient(config)
 
     def del_resources(self, user_id):
         local_users = self.ks.users.list(name=local_user_name(user_id), domain=self.domain)
@@ -114,11 +115,11 @@ class DpProvisioner(object):
     def reset(self, user_id): #retunert passord til view
         lname = local_user_name(user_id)
         if self.with_local_user:
-            self.local_pw = 'hei' #make_password()
+            local_pw = make_password()
             #user = self.ks.users.update(name=lname, domain=self.domain,
             #                            project=proj, email=user_id, password=self.local_pw)
-            log.info("local user created: %s", user.id)
-            rmq.push(email=user.email, password=local_pw, queue='access') #??
+            log.info("local user created: %s", user_id)
+            self.rmq.push(email=user_id, password=local_pw, queue='access') #??
         return local_pw
         #return dict(local_user_name=lname, local_pw=self.local_pw) #return bare passord
 
