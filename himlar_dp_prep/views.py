@@ -103,7 +103,7 @@ class ProvisionerClient(object):
         horizon_url = self.settings.get('horizon_url', '')
         tpl = '{}/dashboard/auth/login/'
         local_pw = prov.reset(user_email)
-        return { 'localpw': local_pw }
+        return { 'local_pw': local_pw }
 
     def login_complete(self, result):
         if result.error:
