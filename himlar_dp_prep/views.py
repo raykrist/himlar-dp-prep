@@ -69,7 +69,7 @@ class ProvisionerClient(object):
     @view_config(route_name='reset', renderer='templates/reset.mak')
     def reset_view(self):
         # TODO: we need to get the user from dataporten
-	user_email = 'Raymond.Kristiansen@uib.no'
+        user_email = 'Raymond.Kristiansen@uib.no'
 
         keystone_url = self.settings.get('keystone_url', '')
         horizon_url = self.settings.get('horizon_url', '')
@@ -102,17 +102,7 @@ class ProvisionerClient(object):
         prov = DpProvisioner(config)
         horizon_url = self.settings.get('horizon_url', '')
         tpl = '{}/dashboard/auth/login/'
-	local_pw = prov.reset(user_email)
-      #  local_pw = prov.reset(user.email)
-      #  gen = PasswordGenerator()
-      #  local_pw = (gen.of().some('numbers').some('lower_letters').some('upper_letters')
-      #      .length(16).done().generate())
-#        res = dict(dashboard_url=tpl.format(horizon_url),
-#                    local_pw=local_pw) 
-#        rmq.push(email=user.email, password=local_pw, queue='access')
-#        prov_result = prov.reset(user.email)
-#        res.update(prov_result)
-#        return res
+        local_pw = prov.reset(user_email)
         return { 'localpw': local_pw }
 
     def login_complete(self, result):
@@ -161,4 +151,3 @@ def no_user_view(exc, request):
 @view_config(context=NoEmailException, renderer="templates/noemail.mak")
 def no_email_view(exc, request):
     return {}
-

@@ -49,7 +49,6 @@ class DpProvisioner(object):
             self.domain = domains[0]
         else:
             raise ValueError("Expecting unique '{}' domain".format(dp_domain_name))
-	print config['mq_username']
         self.rmq = MQclient(config)
 
     def del_resources(self, user_id):
@@ -116,12 +115,14 @@ class DpProvisioner(object):
         lname = local_user_name(user_id)
         if self.with_local_user:
             local_pw = make_password()
-            #user = self.ks.users.update(name=lname, domain=self.domain,
-            #                            project=proj, email=user_id, password=self.local_pw)
             log.info("local user created: %s", user_id)
-            self.rmq.push(email=user_id, password=local_pw, queue='access') #??
+            data = {
+                'action': 'reset_password',
+                'email': user_id,
+                'password': local_pw
+            }
+            self.rmq.push(data=data, queue='access') #??
         return local_pw
-        #return dict(local_user_name=lname, local_pw=self.local_pw) #return bare passord
 
 if __name__ == '__main__':
     DESCRIPTION = "Dataporten provisioner for Openstack"
