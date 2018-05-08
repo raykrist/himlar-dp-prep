@@ -59,16 +59,42 @@ class ProvisionerClient(object):
         return res
 
     @view_config(route_name='reset', renderer='templates/reset.mak')
-    def reset_view(self):
+    def reset_view(self, user):
+        keystone_url = self.settings.get('keystone_url', '')
+        horizon_url = self.settings.get('horizon_url', '')
+        admin_pw = self.settings.get('admin_pw', '')
+        admin_user = self.settings.get('admin_user', '')
+        project_name = self.settings.get('project_name', '')
+        dp_domain_name = self.settings.get('dp_domain_name', '')
+        default_domain_name = self.settings.get('default_domain_name', '')
+        member_role_name = self.settings.get('member_role_name', '')
+        keystone_cachain =  self.settings.get('keystone_cachain', None)
+        with_local_user =  self.settings.get('with_local_user', 'false').lower() == 'true'
+        config = dict(url=keystone_url,
+                      password=admin_pw,
+                      username=admin_user,
+                      project_name=project_name,
+                      dp_domain_name=dp_domain_name,
+                      user_domain_name=default_domain_name,
+                      project_domain_name=default_domain_name,
+                      member_role_name=member_role_name,
+                      keystone_cachain=keystone_cachain,
+                      with_local_user=with_local_user)
+        prov = DpProvisioner(config)
         horizon_url = self.settings.get('horizon_url', '')
         tpl = '{}/dashboard/auth/login/'
-        gen = PasswordGenerator()
-        local_pw = (gen.of().some('numbers').some('lower_letters').some('upper_letters')
-            .length(16).done().generate())
-        res = dict(dashboard_url=tpl.format(horizon_url),
-                    local_pw=local_pw) 
+        local_pw = prov.reset(user.email)
+      #  local_pw = prov.reset(user.email)
+      #  gen = PasswordGenerator()
+      #  local_pw = (gen.of().some('numbers').some('lower_letters').some('upper_letters')
+      #      .length(16).done().generate())
+#        res = dict(dashboard_url=tpl.format(horizon_url),
+#                    local_pw=local_pw) 
 #        rmq.push(email=user.email, password=local_pw, queue='access')
-        return res
+#        prov_result = prov.reset(user.email)
+#        res.update(prov_result)
+#        return res
+        return local_pw
 
     def login_complete(self, result):
         if result.error:

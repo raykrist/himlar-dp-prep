@@ -4,20 +4,24 @@ import json
 #sender
 class MQclient(object):
 
-    username = 'local'
-    password = 'local'
-    host = 'mq.vagrant.iaas.intern'
-    port = 15672
-    vhost = 'access'
+    #username = 'local'
+    #password = 'local'
+    #host = 'mq.vagrant.iaas.intern'
+    #port = 15672
+    #vhost = 'access'
 
-    def __init__(self):
+    def __init__(self, config):
         credentials = pika.PlainCredentials(
-            username=self.__get_config('rabbitmq', 'username'),
-            password=self.__get_config('rabbitmq', 'password'))
+            username=self.config['local'],
+            password=self.config['local'])
+#            username=self.__get_config('rabbitmq', 'username'),
+#            password=self.__get_config('rabbitmq', 'password'))
 
         parameters = pika.ConnectionParameters(
-            host=self.__get_config('rabbitmq', 'host'),
-            virtual_host=self.__get_config('rabbitmq', 'vhost'),
+            host=self.config['host'],
+            vhost=self.config['vhost'],
+#            host=self.__get_config('rabbitmq', 'host'),
+#            virtual_host=self.__get_config('rabbitmq', 'vhost'),
             credentials=credentials)
         self.connection = pika.BlockingConnection(parameters)
         print 'username'

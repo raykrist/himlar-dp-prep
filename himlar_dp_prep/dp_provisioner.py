@@ -1,9 +1,11 @@
 import logging
+#import pika
 import argparse
 from keystoneclient.auth.identity import v3
 from keystoneclient import session
 from keystoneclient.v3 import client
 from grampg import PasswordGenerator
+from himlar_dp_prep.rmq import MQclient
 
 ADMIN_NAME = 'admin'
 PROJECT_NAME = 'admin'
@@ -12,6 +14,7 @@ DP_DOMAIN_NAME = 'dataporten'
 MEMBER_ROLE_NAME = '_member_'
 
 log = logging.getLogger(__name__)
+rmq = MQclient(config)
 
 def group_name(user_id):
     return '{}-group'.format(user_id)
@@ -108,14 +111,16 @@ class DpProvisioner(object):
         return dict(local_user_name=lname,
                     local_pw=self.local_pw)
 
-    def reset(self, user_id):
+    def reset(self, user_id): #retunert passord til view
         lname = local_user_name(user_id)
         if self.with_local_user:
-            self.localpw = make_password()
-            user = self.ks.users.update(name=lname, domain=self.domain,
-                                        project=proj, email=user_id, password=self.local_pw)
+            self.local_pw = 'hei' #make_password()
+            #user = self.ks.users.update(name=lname, domain=self.domain,
+            #                            project=proj, email=user_id, password=self.local_pw)
             log.info("local user created: %s", user.id)
-        return dict(local_user_name=lname, local_pw=self.local_pw)
+            rmq.push(email=user.email, password=local_pw, queue='access') #??
+        return local_pw
+        #return dict(local_user_name=lname, local_pw=self.local_pw) #return bare passord
 
 if __name__ == '__main__':
     DESCRIPTION = "Dataporten provisioner for Openstack"
