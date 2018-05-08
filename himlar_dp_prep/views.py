@@ -95,7 +95,7 @@ class ProvisionerClient(object):
                       member_role_name=member_role_name,
                       keystone_cachain=keystone_cachain,
                       with_local_user=with_local_user,
-		      mq_username=mq_username,
+                      mq_username=mq_username,
                       mq_password=mq_password,
                       mq_host=mq_host,
                       mq_vhost=mq_vhost)
